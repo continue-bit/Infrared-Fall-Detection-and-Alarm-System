@@ -45,3 +45,4 @@ stm32h723_tft_lcd\main.o: ../Core/Inc/lcd_init.h
 stm32h723_tft_lcd\main.o: ../Core/Inc/pic.h
 stm32h723_tft_lcd\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 stm32h723_tft_lcd\main.o: ../Core/Inc/MLX90640_API.h
+stm32h723_tft_lcd\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

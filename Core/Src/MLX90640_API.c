@@ -50,7 +50,7 @@ int MLX90640_GetFrameData(uint8_t slaveAddr, uint16_t *frameData)
     uint16_t statusRegister;
     int error = 1;
     uint8_t cnt = 0;
-    
+    uint16_t timeout_cnt = 0; 
     dataReady = 0;
     while(dataReady == 0)
     {
@@ -60,6 +60,9 @@ int MLX90640_GetFrameData(uint8_t slaveAddr, uint16_t *frameData)
             return error;
         }    
         dataReady = statusRegister & 0x0008;
+				timeout_cnt++;
+        if(timeout_cnt > 5000) {
+            return -99;}
     }       
         
     while(dataReady != 0 && cnt < 5)

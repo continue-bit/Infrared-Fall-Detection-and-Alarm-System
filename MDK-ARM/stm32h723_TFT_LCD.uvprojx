@@ -405,6 +405,26 @@
               <FilePath>..\Core\Src\lcd_init.c</FilePath>
             </File>
             <File>
+              <FileName>MLX90640_API.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Core\Inc\MLX90640_API.h</FilePath>
+            </File>
+            <File>
+              <FileName>MLX90640_HW_I2C.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Core\Inc\MLX90640_HW_I2C.h</FilePath>
+            </File>
+            <File>
+              <FileName>MLX90640_API.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\MLX90640_API.c</FilePath>
+            </File>
+            <File>
+              <FileName>MLX90640_HW_I2C.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\MLX90640_HW_I2C.c</FilePath>
+            </File>
+            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Core/Src/main.c</FilePath>
@@ -540,26 +560,6 @@
               <FileName>stm32h7xx_hal_msp.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Core/Src/stm32h7xx_hal_msp.c</FilePath>
-            </File>
-            <File>
-              <FileName>MLX90640_API.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Core\Inc\MLX90640_API.h</FilePath>
-            </File>
-            <File>
-              <FileName>MLX90640_HW_I2C.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Core\Inc\MLX90640_HW_I2C.h</FilePath>
-            </File>
-            <File>
-              <FileName>MLX90640_API.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\Src\MLX90640_API.c</FilePath>
-            </File>
-            <File>
-              <FileName>MLX90640_HW_I2C.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\Src\MLX90640_HW_I2C.c</FilePath>
             </File>
           </Files>
         </Group>

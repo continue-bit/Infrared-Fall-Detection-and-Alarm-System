@@ -1,6 +1,6 @@
 Dependencies for Project 'stm32h723_TFT_LCD', Target 'stm32h723_TFT_LCD': (DO NOT MODIFY !)
 CompilerVersion: 5060750::V5.06 update 6 (build 750)::.\ARMCC
-F (startup_stm32h723xx.s)(0x69DCE4BD)(--cpu Cortex-M7.fp.dp -g --apcs=interwork --pd "__MICROLIB SETA 1"-I.\RTE\_stm32h723_TFT_LCD-IC:\Users\q_157\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include--pd "__UVISION_VERSION SETA 539" --pd "_RTE_ SETA 1" --pd "STM32H723xx SETA 1" --pd "_RTE_ SETA 1"--list startup_stm32h723xx.lst --xref -o stm32h723_tft_lcd\startup_stm32h723xx.o --depend stm32h723_tft_lcd\startup_stm32h723xx.d)
+F (startup_stm32h723xx.s)(0x69E485A9)(--cpu Cortex-M7.fp.dp -g --apcs=interwork --pd "__MICROLIB SETA 1"-I.\RTE\_stm32h723_TFT_LCD-IC:\Users\q_157\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include--pd "__UVISION_VERSION SETA 539" --pd "_RTE_ SETA 1" --pd "STM32H723xx SETA 1" --pd "_RTE_ SETA 1"--list startup_stm32h723xx.lst --xref -o stm32h723_tft_lcd\startup_stm32h723xx.o --depend stm32h723_tft_lcd\startup_stm32h723xx.d)
 F (..\Core\Src\lcd.c)(0x69743348)(--c99 -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_stm32h723_TFT_LCD-IC:\Users\q_157\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-D__UVISION_VERSION="539" -D_RTE_ -DSTM32H723xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32H723xx-o stm32h723_tft_lcd\lcd.o --omf_browse stm32h723_tft_lcd\lcd.crf --depend stm32h723_tft_lcd\lcd.d)
 I (../Core/Inc/lcd.h)(0x65ABAB7E)
 I (../Core/Inc/main.h)(0x6972D45E)
@@ -80,7 +80,53 @@ I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi_ex.h)(0x6962204F)
 I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h)(0x6962204F)
 I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h)(0x6962204F)
 I (../Core/Inc/spi.h)(0x6972D45E)
-F (../Core/Src/main.c)(0x69DDA581)(--c99 -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_stm32h723_TFT_LCD-IC:\Users\q_157\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-D__UVISION_VERSION="539" -D_RTE_ -DSTM32H723xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32H723xx-o stm32h723_tft_lcd\main.o --omf_browse stm32h723_tft_lcd\main.crf --depend stm32h723_tft_lcd\main.d)
+F (..\Core\Inc\MLX90640_API.h)(0x69DCE6EF)()
+F (..\Core\Inc\MLX90640_HW_I2C.h)(0x69DCE6EF)()
+F (..\Core\Src\MLX90640_API.c)(0x69E2F38E)(--c99 -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_stm32h723_TFT_LCD-IC:\Users\q_157\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-D__UVISION_VERSION="539" -D_RTE_ -DSTM32H723xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32H723xx-o stm32h723_tft_lcd\mlx90640_api.o --omf_browse stm32h723_tft_lcd\mlx90640_api.crf --depend stm32h723_tft_lcd\mlx90640_api.d)
+I (../Core/Inc/MLX90640_HW_i2C.h)(0x69DCE6EF)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x67A49912)
+I (../Core/Inc/MLX90640_API.h)(0x69DCE6EF)
+I (C:\Keil_v5\ARM\ARMCC\include\math.h)(0x599ECD2E)
+F (..\Core\Src\MLX90640_HW_I2C.c)(0x69E1E28A)(--c99 -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_stm32h723_TFT_LCD-IC:\Users\q_157\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-D__UVISION_VERSION="539" -D_RTE_ -DSTM32H723xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32H723xx-o stm32h723_tft_lcd\mlx90640_hw_i2c.o --omf_browse stm32h723_tft_lcd\mlx90640_hw_i2c.crf --depend stm32h723_tft_lcd\mlx90640_hw_i2c.d)
+I (../Core/Inc/MLX90640_HW_I2C.h)(0x69DCE6EF)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x67A49912)
+I (../Core/Inc/i2c.h)(0x69E0B253)
+I (../Core/Inc/main.h)(0x6972D45E)
+I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h)(0x6962204F)
+I (../Core/Inc/stm32h7xx_hal_conf.h)(0x69DCE4BC)
+I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc.h)(0x6962204F)
+I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_def.h)(0x6962204F)
+I (../Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h7xx.h)(0x6962204F)
+I (../Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h723xx.h)(0x6962204F)
+I (../Drivers/CMSIS/Include/core_cm7.h)(0x69622021)
+I (../Drivers/CMSIS/Include/cmsis_version.h)(0x69622021)
+I (../Drivers/CMSIS/Include/cmsis_compiler.h)(0x69622021)
+I (../Drivers/CMSIS/Include/cmsis_armcc.h)(0x69622021)
+I (../Drivers/CMSIS/Include/mpu_armv7.h)(0x69622021)
+I (../Drivers/CMSIS/Device/ST/STM32H7xx/Include/system_stm32h7xx.h)(0x6962204F)
+I (../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h)(0x6962204F)
+I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x599ECD2C)
+I (C:\Keil_v5\ARM\ARMCC\include\math.h)(0x599ECD2E)
+I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc_ex.h)(0x6962204F)
+I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_gpio.h)(0x6962204F)
+I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_gpio_ex.h)(0x6962204F)
+I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_dma.h)(0x6962204F)
+I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_dma_ex.h)(0x6962204F)
+I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_mdma.h)(0x6962204F)
+I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_exti.h)(0x6962204F)
+I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_cortex.h)(0x6962204F)
+I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_flash.h)(0x6962204F)
+I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_flash_ex.h)(0x6962204F)
+I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_hsem.h)(0x6962204F)
+I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_i2c.h)(0x6962204F)
+I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_i2c_ex.h)(0x6962204F)
+I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pwr.h)(0x6962204F)
+I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pwr_ex.h)(0x6962204F)
+I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi.h)(0x6962204F)
+I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi_ex.h)(0x6962204F)
+I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h)(0x6962204F)
+I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h)(0x6962204F)
+F (../Core/Src/main.c)(0x69E48766)(--c99 -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_stm32h723_TFT_LCD-IC:\Users\q_157\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-D__UVISION_VERSION="539" -D_RTE_ -DSTM32H723xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32H723xx-o stm32h723_tft_lcd\main.o --omf_browse stm32h723_tft_lcd\main.crf --depend stm32h723_tft_lcd\main.d)
 I (../Core/Inc/main.h)(0x6972D45E)
 I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h)(0x6962204F)
 I (../Core/Inc/stm32h7xx_hal_conf.h)(0x69DCE4BC)
@@ -117,7 +163,7 @@ I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi.h)(0x6962204F)
 I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi_ex.h)(0x6962204F)
 I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h)(0x6962204F)
 I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h)(0x6962204F)
-I (../Core/Inc/i2c.h)(0x69DCCE7C)
+I (../Core/Inc/i2c.h)(0x69E0B253)
 I (../Core/Inc/spi.h)(0x6972D45E)
 I (../Core/Inc/usart.h)(0x69DCE4BB)
 I (../Core/Inc/gpio.h)(0x6972D45C)
@@ -126,7 +172,8 @@ I (../Core/Inc/lcd_init.h)(0x6974352A)
 I (../Core/Inc/pic.h)(0x697321C2)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x67D28AEC)
 I (../Core/Inc/MLX90640_API.h)(0x69DCE6EF)
-F (../Core/Src/gpio.c)(0x69DCE4BB)(--c99 -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_stm32h723_TFT_LCD-IC:\Users\q_157\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-D__UVISION_VERSION="539" -D_RTE_ -DSTM32H723xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32H723xx-o stm32h723_tft_lcd\gpio.o --omf_browse stm32h723_tft_lcd\gpio.crf --depend stm32h723_tft_lcd\gpio.d)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x599ECD2C)
+F (../Core/Src/gpio.c)(0x69E485A4)(--c99 -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_stm32h723_TFT_LCD-IC:\Users\q_157\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-D__UVISION_VERSION="539" -D_RTE_ -DSTM32H723xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32H723xx-o stm32h723_tft_lcd\gpio.o --omf_browse stm32h723_tft_lcd\gpio.crf --depend stm32h723_tft_lcd\gpio.d)
 I (../Core/Inc/gpio.h)(0x6972D45C)
 I (../Core/Inc/main.h)(0x6972D45E)
 I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h)(0x6962204F)
@@ -164,8 +211,8 @@ I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi.h)(0x6962204F)
 I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi_ex.h)(0x6962204F)
 I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h)(0x6962204F)
 I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h)(0x6962204F)
-F (../Core/Src/i2c.c)(0x69DCCE7C)(--c99 -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_stm32h723_TFT_LCD-IC:\Users\q_157\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-D__UVISION_VERSION="539" -D_RTE_ -DSTM32H723xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32H723xx-o stm32h723_tft_lcd\i2c.o --omf_browse stm32h723_tft_lcd\i2c.crf --depend stm32h723_tft_lcd\i2c.d)
-I (../Core/Inc/i2c.h)(0x69DCCE7C)
+F (../Core/Src/i2c.c)(0x69E4660B)(--c99 -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_stm32h723_TFT_LCD-IC:\Users\q_157\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-D__UVISION_VERSION="539" -D_RTE_ -DSTM32H723xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32H723xx-o stm32h723_tft_lcd\i2c.o --omf_browse stm32h723_tft_lcd\i2c.crf --depend stm32h723_tft_lcd\i2c.d)
+I (../Core/Inc/i2c.h)(0x69E0B253)
 I (../Core/Inc/main.h)(0x6972D45E)
 I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h)(0x6962204F)
 I (../Core/Inc/stm32h7xx_hal_conf.h)(0x69DCE4BC)
@@ -326,52 +373,6 @@ I (../Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h7xx.h)(0x6962204F)
 I (../Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h723xx.h)(0x6962204F)
 I (../Drivers/CMSIS/Include/core_cm7.h)(0x69622021)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x67A49912)
-I (../Drivers/CMSIS/Include/cmsis_version.h)(0x69622021)
-I (../Drivers/CMSIS/Include/cmsis_compiler.h)(0x69622021)
-I (../Drivers/CMSIS/Include/cmsis_armcc.h)(0x69622021)
-I (../Drivers/CMSIS/Include/mpu_armv7.h)(0x69622021)
-I (../Drivers/CMSIS/Device/ST/STM32H7xx/Include/system_stm32h7xx.h)(0x6962204F)
-I (../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h)(0x6962204F)
-I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x599ECD2C)
-I (C:\Keil_v5\ARM\ARMCC\include\math.h)(0x599ECD2E)
-I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc_ex.h)(0x6962204F)
-I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_gpio.h)(0x6962204F)
-I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_gpio_ex.h)(0x6962204F)
-I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_dma.h)(0x6962204F)
-I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_dma_ex.h)(0x6962204F)
-I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_mdma.h)(0x6962204F)
-I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_exti.h)(0x6962204F)
-I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_cortex.h)(0x6962204F)
-I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_flash.h)(0x6962204F)
-I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_flash_ex.h)(0x6962204F)
-I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_hsem.h)(0x6962204F)
-I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_i2c.h)(0x6962204F)
-I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_i2c_ex.h)(0x6962204F)
-I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pwr.h)(0x6962204F)
-I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pwr_ex.h)(0x6962204F)
-I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi.h)(0x6962204F)
-I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi_ex.h)(0x6962204F)
-I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h)(0x6962204F)
-I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h)(0x6962204F)
-F (..\Core\Inc\MLX90640_API.h)(0x69DCE6EF)()
-F (..\Core\Inc\MLX90640_HW_I2C.h)(0x69DCE6EF)()
-F (..\Core\Src\MLX90640_API.c)(0x69DCE766)(--c99 -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_stm32h723_TFT_LCD-IC:\Users\q_157\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-D__UVISION_VERSION="539" -D_RTE_ -DSTM32H723xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32H723xx-o stm32h723_tft_lcd\mlx90640_api.o --omf_browse stm32h723_tft_lcd\mlx90640_api.crf --depend stm32h723_tft_lcd\mlx90640_api.d)
-I (../Core/Inc/MLX90640_HW_i2C.h)(0x69DCE6EF)
-I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x67A49912)
-I (../Core/Inc/MLX90640_API.h)(0x69DCE6EF)
-I (C:\Keil_v5\ARM\ARMCC\include\math.h)(0x599ECD2E)
-F (..\Core\Src\MLX90640_HW_I2C.c)(0x69DCE6EF)(--c99 -c --cpu Cortex-M7.fp.dp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_stm32h723_TFT_LCD-IC:\Users\q_157\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-D__UVISION_VERSION="539" -D_RTE_ -DSTM32H723xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32H723xx-o stm32h723_tft_lcd\mlx90640_hw_i2c.o --omf_browse stm32h723_tft_lcd\mlx90640_hw_i2c.crf --depend stm32h723_tft_lcd\mlx90640_hw_i2c.d)
-I (../Core/Inc/MLX90640_HW_I2C.h)(0x69DCE6EF)
-I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x67A49912)
-I (../Core/Inc/i2c.h)(0x69DCCE7C)
-I (../Core/Inc/main.h)(0x6972D45E)
-I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h)(0x6962204F)
-I (../Core/Inc/stm32h7xx_hal_conf.h)(0x69DCE4BC)
-I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc.h)(0x6962204F)
-I (../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_def.h)(0x6962204F)
-I (../Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h7xx.h)(0x6962204F)
-I (../Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h723xx.h)(0x6962204F)
-I (../Drivers/CMSIS/Include/core_cm7.h)(0x69622021)
 I (../Drivers/CMSIS/Include/cmsis_version.h)(0x69622021)
 I (../Drivers/CMSIS/Include/cmsis_compiler.h)(0x69622021)
 I (../Drivers/CMSIS/Include/cmsis_armcc.h)(0x69622021)
