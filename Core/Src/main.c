@@ -31,6 +31,10 @@
 #include <stdio.h>
 #include "MLX90640_API.h"
 #include <string.h>
+#include "network.h"       // AI 网络主头文件
+#include "network_data.h"  // AI 权重数据头文�?
+#include <stdio.h>
+#include <math.h>
 #define MLX90640_ADDR 0x33 // 传感�? I2C 地址
 typedef struct {
     uint16_t eeMLX90640[832];
@@ -40,41 +44,20 @@ typedef struct {
     paramsMLX90640 mlx_params;
 } MLX90640_Camera;
 __attribute__((section(".RAM_D1"), aligned(32))) MLX90640_Camera cam;
-__attribute__((section(".RAM_D1"), aligned(32))) uint16_t display_data_array[12288]; 
-
-uint8_t pc_tx_buf[1544] = {0}; 
+__attribute__((section(".RAM_D1"), aligned(32))) uint16_t display_data_array[12288];
+//AI变量
+ai_handle network_handle = AI_HANDLE_NULL;
+ai_buffer *ai_input;
+ai_buffer *ai_output;
+__attribute__((section(".RAM_D1"), aligned(32))) ai_u8 activations[AI_NETWORK_DATA_ACTIVATIONS_SIZE];
+__attribute__((section(".RAM_D1"), aligned(32))) ai_i8 ai_in_data[AI_NETWORK_IN_1_SIZE_BYTES];
+__attribute__((section(".RAM_D1"), aligned(32))) ai_i8 ai_out_data[AI_NETWORK_OUT_1_SIZE_BYTES];
 extern UART_HandleTypeDef huart2; 
 int fputc(int ch, FILE *f)
 {
     HAL_UART_Transmit(&huart2, (uint8_t *)&ch, 1, HAL_MAX_DELAY);
     return ch;
 }
-void Send_Thermal_Frame_To_PC_Blocking(float* raw_temp) 
-{
-    // 1. 填入帧头�?0x5A 0x5A
-    pc_tx_buf[0] = 0x5A;
-    pc_tx_buf[1] = 0x5A;
-
-    // 2. 填充数据：把 float 放大 100 倍转�? 16位无符号整数，拆分高低字�?
-    int buffer_index = 2;
-    for(int i = 0; i < 768; i++) 
-    {
-        uint16_t temp_int = (uint16_t)(raw_temp[i] * 100.0f); 
-        
-        // 强制大端模式：高位在�? (MSB)，低位在�? (LSB)
-        pc_tx_buf[buffer_index++] = (temp_int >> 8) & 0xFF; 
-        pc_tx_buf[buffer_index++] = temp_int & 0xFF;        
-    }
-
-    // 3. 填入帧尾�?0xA5 0xA5
-    pc_tx_buf[buffer_index++] = 0xA5;
-    pc_tx_buf[buffer_index++] = 0xA5;
-
-    // 4. 阻塞发�?�！单片机会在这里等待十几毫秒直到发�?
-    // 注意：请务必确保串口波特率在 921600 或以上，否则画面会卡�?
-    HAL_UART_Transmit(&huart2, pc_tx_buf, 1540, HAL_MAX_DELAY);
-}
-// 辅助函数：防止数组越�?
 float Get_Temp_Safe(float* raw_temp, int x, int y) {
     if (x < 0) x = 0;
     if (x >= 32) x = 31;
@@ -83,71 +66,43 @@ float Get_Temp_Safe(float* raw_temp, int x, int y) {
     return raw_temp[y * 32 + x];
 }
 
+// 1. 优化后的热成像图显示：避开文字区域，增加对比度
 void Preprocess_Thermal_Colormapped(float* raw_temp, uint16_t* display_rgb565) 
 {
-    // ==========================================
-    // 1. 计算真实的画面平均温度（通常代表背景�?
-    // ==========================================
     float sum_t = 0;
-    for(int i = 0; i < 768; i++) {
-        sum_t += raw_temp[i];
-    }
+    for(int i = 0; i < 768; i++) sum_t += raw_temp[i];
     float avg_t = sum_t / 768.0f;
 
-    // 强行拉开色差：比平均温度�?1.5度的就是背景(蓝绿)，比平均�?4度的就是人体(红白)
-    float min_temp = avg_t - 1.5f; 
-    float max_temp = avg_t + 4.0f;
+    // 调整显示对比度，让人体更鲜艳
+    float min_temp = avg_t - 2.0f; 
+    float max_temp = avg_t + 5.0f;
 
-    // ==========================================
-    // 2. 直接生成 128x96 的高清平滑图像（放大4倍）
-    // ==========================================
     for(int y = 0; y < 96; y++) {
         for(int x = 0; x < 128; x++) {
+            float gx = x / 4.0f; float gy = y / 4.0f;
+            int gxi = (int)gx; int gyi = (int)gy;
+            float tx = gx - gxi; float ty = gy - gyi;
             
-            // 算出�? 32x24 原始数组里的浮点坐标
-            float gx = x / 4.0f; 
-            float gy = y / 4.0f;
-            
-            int gxi = (int)gx;
-            int gyi = (int)gy;
-            
-            float tx = gx - gxi;
-            float ty = gy - gyi;
-            
-            // 取出四个点做双线性插�?
             float c00 = Get_Temp_Safe(raw_temp, gxi, gyi);
             float c10 = Get_Temp_Safe(raw_temp, gxi + 1, gyi);
             float c01 = Get_Temp_Safe(raw_temp, gxi, gyi + 1);
             float c11 = Get_Temp_Safe(raw_temp, gxi + 1, gyi + 1);
             
-            float temp = (1 - tx) * (1 - ty) * c00 +
-                         tx * (1 - ty) * c10 +
-                         (1 - tx) * ty * c01 +
-                         tx * ty * c11;
+            float temp = (1 - tx) * (1 - ty) * c00 + tx * (1 - ty) * c10 + (1 - tx) * ty * c01 + tx * ty * c11;
 
-            // 铁红伪彩色映�?
             float v = (temp - min_temp) / (max_temp - min_temp);
-            if(v > 1.0f) v = 1.0f; 
-            if(v < 0.0f) v = 0.0f;
+            if(v > 1.0f) v = 1.0f; if(v < 0.0f) v = 0.0f;
 
             float r_f, g_f, b_f;
-            if (v < 0.125f) {
-                r_f = 0.0f; g_f = 0.0f; b_f = 0.5f + 4.0f * v;
-            } else if (v < 0.375f) {
-                r_f = 0.0f; g_f = 4.0f * (v - 0.125f); b_f = 1.0f;
-            } else if (v < 0.625f) {
-                r_f = 4.0f * (v - 0.375f); g_f = 1.0f; b_f = 1.0f - 4.0f * (v - 0.375f);
-            } else if (v < 0.875f) {
-                r_f = 1.0f; g_f = 1.0f - 4.0f * (v - 0.625f); b_f = 0.0f;
-            } else {
-                r_f = 1.0f - 4.0f * (v - 0.875f); g_f = 0.0f; b_f = 0.0f;
-            }
+            if (v < 0.125f) { r_f = 0.0f; g_f = 0.0f; b_f = 0.5f + 4.0f * v; }
+            else if (v < 0.375f) { r_f = 0.0f; g_f = 4.0f * (v - 0.125f); b_f = 1.0f; }
+            else if (v < 0.625f) { r_f = 4.0f * (v - 0.375f); g_f = 1.0f; b_f = 1.0f - 4.0f * (v - 0.375f); }
+            else if (v < 0.875f) { r_f = 1.0f; g_f = 1.0f - 4.0f * (v - 0.625f); b_f = 0.0f; }
+            else { r_f = 1.0f - 4.0f * (v - 0.875f); g_f = 0.0f; b_f = 0.0f; }
 
             uint16_t r = (uint16_t)(r_f * 31.0f);
             uint16_t g = (uint16_t)(g_f * 63.0f);
             uint16_t b = (uint16_t)(b_f * 31.0f);
-            
-            // 存入�?维数组，现在的跨度是 128
             display_rgb565[y * 128 + x] = (r << 11) | (g << 5) | b;
         }
     }
@@ -169,6 +124,59 @@ void LCD_ShowThermal_Map(uint16_t start_x, uint16_t start_y, uint16_t* rgb565_da
         LCD_WR_DATA8(color565 >> 8);   
         LCD_WR_DATA8(color565 & 0xFF); 
     }
+}
+uint32_t last_ai_time = 0;
+
+void Run_Fall_Detection_AI(float* raw_temp) 
+{
+    if(network_handle == AI_HANDLE_NULL) return;
+
+    int8_t* in_ptr = (int8_t*)ai_input[0].data;
+    int8_t* out_ptr = (int8_t*)ai_output[0].data;
+
+    float scale = 0.00670511368f; 
+    int zero_point = 16;
+    float min_t = 20.0f; 
+    float max_t = 35.0f;
+
+    // 图像处理逻辑 (32x24 -> 32x32)
+    for(int y = 0; y < 32; y++) {
+        int src_y = (y * 23) / 31; 
+        for(int x = 0; x < 32; x++) {
+            float temp = raw_temp[src_y * 32 + x]; 
+            if(temp > max_t) temp = max_t;
+            if(temp < min_t) temp = min_t;
+            float v = (temp - min_t) / (max_t - min_t);
+            float pixel_val = v * 255.0f;
+            float float_val = (pixel_val / 127.5f) - 1.0f;
+            int32_t int8_val = (int32_t)roundf(float_val / scale) + zero_point;
+            in_ptr[y * 32 + x] = (int8_t)__SSAT(int8_val, 8);
+        }
+    }
+
+    // 运行 AI
+    SCB_CleanDCache_by_Addr((uint32_t*)ai_in_data, AI_NETWORK_IN_1_SIZE_BYTES);
+    ai_network_run(network_handle, ai_input, ai_output);
+    SCB_InvalidateDCache_by_Addr((uint32_t*)ai_out_data, AI_NETWORK_OUT_1_SIZE_BYTES);
+
+    // --- LCD 结果强制刷新 ---
+    // 1. 先把文字区域刷黑 (坐标 180 以下)
+    LCD_Fill(0, 180, 240, 240, BLACK); 
+
+    int8_t fall_score = out_ptr[0];
+    int8_t normal_score = out_ptr[1];
+    printf(">> AI CHECK: Fall(%d) vs Normal(%d)\n", fall_score, normal_score);
+		
+    if (fall_score > normal_score) {
+        // 红色显示跌倒
+        LCD_ShowString(10, 10, (uint8_t*)"FALL DETECTED!", WHITE, RED, 24, 0);
+    } else
+ {
+        // 绿色显示正常
+        LCD_ShowString(10, 10, (uint8_t*)"NORMAL", GREEN, BLACK, 24, 0);
+    }
+    
+    printf("AI Executed -> Fall:%d Normal:%d\r\n", fall_score, normal_score);
 }
 /* USER CODE END Includes */
 
@@ -220,6 +228,9 @@ int main(void)
   /* Enable I-Cache---------------------------------------------------------*/
   SCB_EnableICache();
 
+  /* Enable D-Cache---------------------------------------------------------*/
+  SCB_EnableDCache();
+
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
@@ -249,7 +260,7 @@ int main(void)
   printf("MLX90640 Initialization Starting...\r\n");
 	  
   memset(display_data_array, 0, sizeof(display_data_array));
-  MLX90640_SetRefreshRate(MLX90640_ADDR, 0x06); 
+  MLX90640_SetRefreshRate(MLX90640_ADDR, 0x05); 
   MLX90640_SetChessMode(MLX90640_ADDR); 
 
   if(MLX90640_DumpEE(MLX90640_ADDR,cam.eeMLX90640) != 0) {
@@ -258,7 +269,27 @@ int main(void)
           MLX90640_ExtractParameters(cam.eeMLX90640, &cam.mlx_params);
           printf("Cam %d Init Success!\r\n",1);
       }
+		  
+// ==================== AI 引擎初始�? ====================
+  printf("AI Engine Starting...\r\n");
+  ai_error err = ai_network_create(&network_handle, AI_NETWORK_DATA_CONFIG);
+  if (err.type != AI_ERROR_NONE) {
+      printf("AI Create Failed!\r\n");
+  } else {
+      const ai_network_params params = {
+          AI_NETWORK_DATA_WEIGHTS(ai_network_data_weights_get()),
+          AI_NETWORK_DATA_ACTIVATIONS(activations)
+      };
+      if (!ai_network_init(network_handle, &params)) {
+          printf("AI Init Failed!\r\n");
+      } else {
+          ai_input = ai_network_inputs_get(network_handle, NULL);
+          ai_output = ai_network_outputs_get(network_handle, NULL);
+          printf("AI Engine Ready! Let's Go!\r\n");
+      }
+  }
   LCD_Fill(0, 0, LCD_W, LCD_H, BLACK); 
+	last_ai_time = HAL_GetTick();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -280,13 +311,18 @@ int main(void)
                   {
                       cam.raw_temperature[j] = (float)cam.raw_temp_int[j] / 100.0f;
                   }
-									Send_Thermal_Frame_To_PC_Blocking(cam.raw_temperature);
                       Preprocess_Thermal_Colormapped(cam.raw_temperature, display_data_array);
                       LCD_ShowThermal_Map(56, 72, display_data_array);
 
                       char temp_str[30];
                       sprintf(temp_str, "C1:%.1f  T:%.1f", cam.raw_temperature[384], Ta);
                       LCD_ShowString(10, 2, (uint8_t*)temp_str, WHITE, BLACK, 16, 0);
+									              // 5. 召唤 AI 进行跌�?�判定！
+                       if (HAL_GetTick() - last_ai_time >= 5000) 
+                      {
+                        Run_Fall_Detection_AI(cam.raw_temperature);
+                        last_ai_time = HAL_GetTick(); // 重置计时器
+                      }
              }
           }
     /* USER CODE END WHILE */

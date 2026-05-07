@@ -46,3 +46,10 @@ stm32h723_tft_lcd\main.o: ../Core/Inc/pic.h
 stm32h723_tft_lcd\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 stm32h723_tft_lcd\main.o: ../Core/Inc/MLX90640_API.h
 stm32h723_tft_lcd\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+stm32h723_tft_lcd\main.o: ../X-CUBE-AI/App/network.h
+stm32h723_tft_lcd\main.o: ../X-CUBE-AI/App/network_config.h
+stm32h723_tft_lcd\main.o: ../Middlewares/ST/AI/Inc/ai_platform.h
+stm32h723_tft_lcd\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\inttypes.h
+stm32h723_tft_lcd\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+stm32h723_tft_lcd\main.o: ../X-CUBE-AI/App/network_data.h
+stm32h723_tft_lcd\main.o: ../X-CUBE-AI/App/network_data_params.h
