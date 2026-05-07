@@ -1038,6 +1038,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>New Group</GroupName>
+          <Files>
+            <File>
+              <FileName>LCD_show.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Core\Inc\LCD_show.h</FilePath>
+            </File>
+            <File>
+              <FileName>LCD_show.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\LCD_show.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>::CMSIS</GroupName>
         </Group>
       </Groups>

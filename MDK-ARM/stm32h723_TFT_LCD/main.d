@@ -53,3 +53,4 @@ stm32h723_tft_lcd\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\inttypes.h
 stm32h723_tft_lcd\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 stm32h723_tft_lcd\main.o: ../X-CUBE-AI/App/network_data.h
 stm32h723_tft_lcd\main.o: ../X-CUBE-AI/App/network_data_params.h
+stm32h723_tft_lcd\main.o: ../Core/Inc/LCD_show.h

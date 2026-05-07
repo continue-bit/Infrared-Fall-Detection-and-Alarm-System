@@ -38,6 +38,7 @@
 "stm32h723_tft_lcd\network.o"
 "stm32h723_tft_lcd\network_data.o"
 "stm32h723_tft_lcd\network_data_params.o"
+"stm32h723_tft_lcd\lcd_show.o"
 --library_type=microlib --strict --scatter "stm32h723_TFT_LCD\stm32h723_TFT_LCD.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
