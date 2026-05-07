@@ -1038,7 +1038,7 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>New Group</GroupName>
+          <GroupName>MLX_LCD</GroupName>
           <Files>
             <File>
               <FileName>LCD_show.h</FileName>
