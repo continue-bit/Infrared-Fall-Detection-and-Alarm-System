@@ -21,7 +21,7 @@
 #include "stdint.h"
 
 #define SCALEALPHA 0.000001f
-     
+extern uint8_t cam1_buf[1536];
  typedef struct
     {
         int16_t kVdd;
@@ -66,5 +66,5 @@
     int MLX90640_SetInterleavedMode(uint8_t slaveAddr);
     int MLX90640_SetChessMode(uint8_t slaveAddr);
     void MLX90640_BadPixelsCorrection(uint16_t *pixels, float *to, int mode, paramsMLX90640 *params);
-    
+    void Send_IR_Data_Hex(uint16_t *temp_int_array);
 #endif

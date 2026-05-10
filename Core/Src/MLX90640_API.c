@@ -17,7 +17,7 @@
 #include "MLX90640_HW_i2C.h"
 #include <MLX90640_API.h>
 #include <math.h>
-
+uint8_t ir_hex_tx_buffer[1540];
 void ExtractVDDParameters(uint16_t *eeData, paramsMLX90640 *mlx90640);
 void ExtractPTATParameters(uint16_t *eeData, paramsMLX90640 *mlx90640);
 void ExtractGainParameters(uint16_t *eeData, paramsMLX90640 *mlx90640);
@@ -289,7 +289,7 @@ void MLX90640_CalculateTo(uint16_t *frameData, const paramsMLX90640 *params, flo
     int8_t range;
     uint16_t subPage;
 	
-		int i =0, j = 0;
+		int i =0;
 		int pixelNumber = 0;
     
     subPage = frameData[833];
@@ -1348,3 +1348,21 @@ int IsPixelBad(uint16_t pixel,paramsMLX90640 *params)
     
     return 0;     
 }     
+
+uint8_t cam1_buf[1536];
+
+/**
+ * @brief 
+ * @param temp_int_array 
+ */
+void Send_IR_Data_Hex(uint16_t *temp_int_array)
+{
+    int buffer_index = 0;
+    for(int i = 0; i < 768; i++) 
+    {
+        uint16_t temp_val = temp_int_array[i]; 
+        
+        cam1_buf[buffer_index++] = (temp_val >> 8) & 0xFF; // ??8? (?? 0x09)
+        cam1_buf[buffer_index++] = temp_val & 0xFF;        // ??8? (?? 0xEF)
+    }
+}

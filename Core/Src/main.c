@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "dma.h"
 #include "i2c.h"
 #include "spi.h"
 #include "usart.h"
@@ -27,16 +28,25 @@
 /* USER CODE BEGIN Includes */
 #include "lcd.h"
 #include "lcd_init.h"
-#include "pic.h"
 #include <stdio.h>
 #include "MLX90640_API.h"
 #include <string.h>
 #include "network.h"       // AI 网络主头文件
-#include "network_data.h"  // AI 权重数据头文�?
+#include "network_data.h"  // AI 权重数据头文�?
 #include <stdio.h>
 #include <math.h>
 #include "LCD_show.h"
-#define MLX90640_ADDR 0x33 // 传感�? I2C 地址
+#include "ESP8266.h"
+#include "Radar.h"
+#define MLX90640_ADDR 0x33 // 传感�? I2C 地址
+#if defined(__ICCARM__) || defined(__CC_ARM) || defined(__GNUC__)
+    __attribute__((aligned(32))) char b64_buffer[30000]; 
+#endif
+
+#if defined(__ICCARM__) || defined(__CC_ARM) || defined(__GNUC__)
+    __attribute__((aligned(32))) uint8_t test_jpeg_buffer[7500];
+#endif
+
 typedef struct {
     uint16_t eeMLX90640[832];
     uint16_t frameData[834];
@@ -44,22 +54,18 @@ typedef struct {
     float raw_temperature[768]; 
     paramsMLX90640 mlx_params;
 } MLX90640_Camera;
+
 __attribute__((section(".RAM_D1"), aligned(32))) MLX90640_Camera cam;
 __attribute__((section(".RAM_D1"), aligned(32))) uint16_t display_data_array[12288];
 //AI变量
 ai_handle network_handle = AI_HANDLE_NULL;
 ai_buffer *ai_input;
 ai_buffer *ai_output;
+int8_t fall_score,normal_score;
 __attribute__((section(".RAM_D1"), aligned(32))) ai_u8 activations[AI_NETWORK_DATA_ACTIVATIONS_SIZE];
 __attribute__((section(".RAM_D1"), aligned(32))) ai_i8 ai_in_data[AI_NETWORK_IN_1_SIZE_BYTES];
 __attribute__((section(".RAM_D1"), aligned(32))) ai_i8 ai_out_data[AI_NETWORK_OUT_1_SIZE_BYTES];
-extern UART_HandleTypeDef huart2; 
-int fputc(int ch, FILE *f)
-{
-    HAL_UART_Transmit(&huart2, (uint8_t *)&ch, 1, HAL_MAX_DELAY);
-    return ch;
-}
-
+char tx_buffer[128]; 
 uint32_t last_ai_time = 0;
 
 void Run_Fall_Detection_AI(float* raw_temp) 
@@ -94,24 +100,12 @@ void Run_Fall_Detection_AI(float* raw_temp)
     ai_network_run(network_handle, ai_input, ai_output);
     SCB_InvalidateDCache_by_Addr((uint32_t*)ai_out_data, AI_NETWORK_OUT_1_SIZE_BYTES);
 
-    // --- LCD 结果强制刷新 ---
-    // 1. 先把文字区域刷黑 (坐标 180 以下)
-    LCD_Fill(0, 180, 240, 240, BLACK); 
-
     int8_t fall_score = out_ptr[0];
     int8_t normal_score = out_ptr[1];
-    printf(">> AI CHECK: Fall(%d) vs Normal(%d)\n", fall_score, normal_score);
-		
-    if (fall_score > normal_score) {
-        // 红色显示跌倒
-        LCD_ShowString(10, 10, (uint8_t*)"FALL DETECTED!", WHITE, RED, 24, 0);
-    } else
- {
-        // 绿色显示正常
-        LCD_ShowString(10, 10, (uint8_t*)"NORMAL", GREEN, BLACK, 24, 0);
-    }
-    
-    printf("AI Executed -> Fall:%d Normal:%d\r\n", fall_score, normal_score);
+		snprintf(tx_buffer, sizeof(tx_buffer), ">> AI CHECK: Fall(%d) vs Normal(%d)\n", fall_score, normal_score);
+		HAL_UART_Transmit(&huart2, (uint8_t *)tx_buffer, strlen(tx_buffer), HAL_MAX_DELAY);
+		snprintf(tx_buffer, sizeof(tx_buffer), "AI Executed -> Fall:%d Normal:%d\r\n", fall_score, normal_score);
+		HAL_UART_Transmit(&huart2, (uint8_t *)tx_buffer, strlen(tx_buffer), HAL_MAX_DELAY);
 }
 /* USER CODE END Includes */
 
@@ -138,6 +132,7 @@ void Run_Fall_Detection_AI(float* raw_temp)
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+static void MPU_Config(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -157,6 +152,9 @@ int main(void)
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
+
+  /* MPU Configuration--------------------------------------------------------*/
+  MPU_Config();
 
   /* Enable the CPU Cache */
 
@@ -184,46 +182,51 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_I2C1_Init();
   MX_USART2_UART_Init();
   MX_SPI1_Init();
+  MX_USART3_UART_Init();
+  MX_UART4_Init();
+  MX_UART7_Init();
   /* USER CODE BEGIN 2 */
-  LCD_Init();//LCD
-  LCD_Fill(0,0,LCD_W,LCD_H,WHITE);
-//	LCD_ShowString(10, 10, (uint8_t*)"System Boot...", RED, BLACK, 24, 0);
-  
-  printf("MLX90640 Initialization Starting...\r\n");
-	  
+//  LCD_Init();//LCD
+//  LCD_Fill(0,0,LCD_W,LCD_H,WHITE);
+	//Internet port
+	Start_Radar_DMA(); 
+	ESP8266_Init_WiFi();
+	HAL_Delay(3000);
+  printf("--- Waiting Test ---\r\n");
+	HAL_UART_Transmit(&huart2, (uint8_t *)"MLX90640 Initialization Starting...\r\n", sizeof("MLX90640 Initialization Starting...\r\n")-1, 100);
   memset(display_data_array, 0, sizeof(display_data_array));
   MLX90640_SetRefreshRate(MLX90640_ADDR, 0x05); 
   MLX90640_SetChessMode(MLX90640_ADDR); 
 
   if(MLX90640_DumpEE(MLX90640_ADDR,cam.eeMLX90640) != 0) {
-          printf("Cam %d I2C Error! Check wiring.\r\n", 1);
+          HAL_UART_Transmit(&huart2, (uint8_t *)"error\r\n", sizeof("error\r\n")-1, 100);
       } else {
           MLX90640_ExtractParameters(cam.eeMLX90640, &cam.mlx_params);
-          printf("Cam %d Init Success!\r\n",1);
+				HAL_UART_Transmit(&huart2, (uint8_t *)"Cam Init Success!\r\n", sizeof("Cam Init Success!\r\n")-1, 100);
       }
 		  
-// ==================== AI 引擎初始�? ====================
-  printf("AI Engine Starting...\r\n");
+// ==================== AI 引擎初始�? ====================
+	HAL_UART_Transmit(&huart2, (uint8_t *)"AI Engine Starting...\r\n", sizeof("AI Engine Starting...\r\n")-1, 100);
   ai_error err = ai_network_create(&network_handle, AI_NETWORK_DATA_CONFIG);
   if (err.type != AI_ERROR_NONE) {
-      printf("AI Create Failed!\r\n");
+		HAL_UART_Transmit(&huart2, (uint8_t *)"AI Create Failed!\r\n", sizeof("AI Create Failed!\r\n")-1, 100);
   } else {
       const ai_network_params params = {
           AI_NETWORK_DATA_WEIGHTS(ai_network_data_weights_get()),
           AI_NETWORK_DATA_ACTIVATIONS(activations)
       };
       if (!ai_network_init(network_handle, &params)) {
-          printf("AI Init Failed!\r\n");
+				HAL_UART_Transmit(&huart2, (uint8_t *)"AI Init Failed!\r\n", sizeof("AI Init Failed!\r\n")-1, 100);
       } else {
           ai_input = ai_network_inputs_get(network_handle, NULL);
           ai_output = ai_network_outputs_get(network_handle, NULL);
-          printf("AI Engine Ready! Let's Go!\r\n");
+				HAL_UART_Transmit(&huart2, (uint8_t *)"AI Engine Ready! Let's Go!\r\n", sizeof("AI Engine Ready! Let's Go!\r\n")-1, 100);
       }
   }
-  LCD_Fill(0, 0, LCD_W, LCD_H, BLACK); 
 	last_ai_time = HAL_GetTick();
   /* USER CODE END 2 */
 
@@ -246,18 +249,32 @@ int main(void)
                   {
                       cam.raw_temperature[j] = (float)cam.raw_temp_int[j] / 100.0f;
                   }
-                      Preprocess_Thermal_Colormapped(cam.raw_temperature, display_data_array);
-                      LCD_ShowThermal_Map(56, 72, display_data_array);
+									Send_IR_Data_Hex(cam.raw_temp_int); 
 
-                      char temp_str[30];
-                      sprintf(temp_str, "C1:%.1f  T:%.1f", cam.raw_temperature[384], Ta);
-                      LCD_ShowString(10, 2, (uint8_t*)temp_str, WHITE, BLACK, 16, 0);
-									              // 5. 召唤 AI 进行跌�?�判定！
-                       if (HAL_GetTick() - last_ai_time >= 5000) 
+									 // 5. 召唤 AI 进行跌�?�判定！
+                    if (HAL_GetTick() - last_ai_time >= 5000) 
                       {
                         Run_Fall_Detection_AI(cam.raw_temperature);
                         last_ai_time = HAL_GetTick(); // 重置计时器
                       }
+									 ParseRadarData_DMA();
+
+                   // 2. 检查是否有新的数据包需要上传 (比如通过定时器或雷达触发)
+                   // 示例：每 10 秒上传一次，或者检测到跌倒 (g_radar_data.is_fall == 1) 时触发
+                   static uint32_t last_upload_time = 0;
+                   if ((HAL_GetTick() - last_upload_time > 10000) || ((g_radar_data.is_fall == 1)&&(fall_score > normal_score && fall_score > 50)))
+                      {
+                          last_upload_time = HAL_GetTick();
+        
+                          printf("-- Intend Transmit --- \r\n");
+                          uint32_t total_size = Pack_All_Camera_Data();
+        
+                          printf("All_Length: %lu byte\r\n", (unsigned long)total_size);
+		                          // 打包完数据后，确保内存已刷新
+                          SCB_CleanDCache_by_Addr((uint32_t *)test_jpeg_buffer, 7500);
+                          Upload_Image_To_Cloud(test_jpeg_buffer, total_size);												
+                      }
+                    HAL_Delay (10);
              }
           }
     /* USER CODE END WHILE */
@@ -328,6 +345,35 @@ void SystemClock_Config(void)
 /* USER CODE BEGIN 4 */
 
 /* USER CODE END 4 */
+
+ /* MPU Configuration */
+
+void MPU_Config(void)
+{
+  MPU_Region_InitTypeDef MPU_InitStruct = {0};
+
+  /* Disables the MPU */
+  HAL_MPU_Disable();
+
+  /** Initializes and configures the Region and the memory to be protected
+  */
+  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
+  MPU_InitStruct.Number = MPU_REGION_NUMBER0;
+  MPU_InitStruct.BaseAddress = 0x0;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_4GB;
+  MPU_InitStruct.SubRegionDisable = 0x87;
+  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+  MPU_InitStruct.AccessPermission = MPU_REGION_NO_ACCESS;
+  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
+  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
+  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
+
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+  /* Enables the MPU */
+  HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
+
+}
 
 /**
   * @brief  This function is executed in case of error occurrence.
